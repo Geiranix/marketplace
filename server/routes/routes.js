@@ -1,4 +1,4 @@
-const express = require('express')
+const express = require('express');
 const { 
     createNewProduct, 
     getAvailableProducts, 
@@ -7,29 +7,29 @@ const {
     updateAProductById, 
     deleteAProductById, 
     searchProductsByName 
-} = require('../controllers/products.controller')
+} = require('../controllers/products.controller');
 const { 
     getAvailableCategories, 
     createACategory 
-} = require('../controllers/category.controller')
+} = require('../controllers/category.controller');
 
-const router = express.Router()
+const router = express.Router();
 
 router.route('/product')
     .get(getAvailableProducts)
     .post(createNewProduct)
-    .delete(deleteAllProducts)
+    .delete(deleteAllProducts);
 
 router.route('/product/:id')
     .get(getAProductById)
     .delete(deleteAProductById)
-    .put(updateAProductById)
+    .put(updateAProductById);
 
 router.route('/product/search')
-    .get(searchProductsByName)
+    .get(searchProductsByName);
 
 router.route('/category')
     .get(getAvailableCategories)
-    .post(createACategory)
+    .post(createACategory);
 
-module.exports = router
+module.exports = router;
