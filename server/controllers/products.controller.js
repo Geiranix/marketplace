@@ -6,13 +6,13 @@ const createNewProduct = async (req, res) => {
     const { name, description, price, quantity, category } = req.body;
 
     if (!CATEGORIES.includes(category.toLowerCase())) {
-        return res.status(500).json({ error: "Categories should include men, women, or teens only." });
+        return res.status(400).json({ error: "Categories should include men, women, or teens only." });
     }
 
     try {
         const product = new Product({ name, description, price, quantity, category });
         await product.save();
-        return res.status(200).json(product);
+        return res.status(201).json(product);
     } catch (error) {
         return res.status(500).json({ error: error.message });
     }
@@ -20,9 +20,9 @@ const createNewProduct = async (req, res) => {
 
 const getAvailableProducts = async (req, res) => {
     try {
-        const products = await Product.find()
-        if (!products) {
-            return res.status(500).json({ message: "No products found in the database." });
+        const products = await Product.find();
+        if (products.length === 0) {
+            return res.status(404).json({ message: "No products found in the database." });
         }
         res.status(200).json(products);
     } catch (error) {
@@ -34,9 +34,9 @@ const getAProductById = async (req, res) => {
     const { id } = req.params;
 
     try {
-        const product = await Product.findById(id)
+        const product = await Product.findById(id);
         if (!product) {
-            return res.status(500).json({ error: "No product found." });
+            return res.status(404).json({ error: "No product found." });
         }
         res.status(200).json(product);
     } catch (error) {
@@ -45,45 +45,46 @@ const getAProductById = async (req, res) => {
 }
 
 const updateAProductById = async (req, res) => {
-    const { id } = req.params
+    const { id } = req.params;
     const { name, description, price, quantity, category } = req.body;
 
-    if (!CATEGORIES.includes(category.toLowerCase())) {
-        return res.status(500).json({ error: "Categories should include men, women, or teens only." });
+    if (category && !CATEGORIES.includes(category.toLowerCase())) {
+        return res.status(400).json({ error: "Categories should include men, women, or teens only." });
     }
+    
     try {
         const product = await Product.findByIdAndUpdate(
             id,
             { name, description, price, quantity, category },
-            { new: true },
-        )
+            { new: true }
+        );
         if (!product) {
-            return res.status(500).json({ error: "No product found!" });
+            return res.status(404).json({ error: "No product found!" });
         }
-        res.status(200).json(product)
+        res.status(200).json(product);
     } catch (error) {
         return res.status(500).json({ error: error.message });
     }
 }
 
 const deleteAProductById = async (req, res) => {
-    const { id } = req.params
+    const { id } = req.params;
 
     try {
-        const product = await Product.findByIdAndDelete(id)
+        const product = await Product.findByIdAndDelete(id);
         if (!product) {
-            return res.json({ message: `The item ${id} is already deleted!` })
+            return res.status(404).json({ message: `The item ${id} is already deleted!` });
         }
-        res.status(200).json(product)
+        res.status(200).json(product);
     } catch (error) {
         return res.status(500).json({ error: error.message });
     }
 }
+
 const deleteAllProducts = async (req, res) => {
     try {
-        const product = await Product.deleteMany()
-        res.status(200).json({ message: "You've successfully deleted all the products. " })
-        res.status(200).json(product)
+        await Product.deleteMany();
+        res.status(200).json({ message: "You've successfully deleted all the products." });
     } catch (error) {
         return res.status(500).json({ error: error.message });
     }
@@ -92,18 +93,16 @@ const deleteAllProducts = async (req, res) => {
 const searchProductsByName = async (req, res) => {
     const { name } = req.query;
     try {
-        const products = await Product.find({ "name": new RegExp(name, 'i') })
-        if (!products || products.length === 0) {
-            return (
-                res.status(500)
-                    .json({ message: `No product matches the name ${() => capitalizeInitial(name)} in our database!` })
-            )
+        const products = await Product.find({ name: new RegExp(name, 'i') });
+        if (products.length === 0) {
+            return res.status(404).json({ message: `No product matches the name ${capitalizeInitial(name)} in our database!` });
         }
-        res.status(200).json(products)
+        res.status(200).json(products);
     } catch (error) {
         return res.status(500).json({ error: error.message });
     }
 }
+
 module.exports = {
     createNewProduct,
     getAvailableProducts,
