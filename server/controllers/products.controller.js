@@ -1,6 +1,7 @@
 const Product = require('../models/Product');
 const CATEGORIES = ["men", "women", "teens"];
 const capitalizeInitial = (name) => name.charAt(0).toUpperCase() + name.slice(1);
+
 const createNewProduct = async (req, res) => {
     const { name, description, price, quantity, category } = req.body;
 
