@@ -15,17 +15,17 @@ const {
 
 const router = express.Router();
 
-router.route('/product')
+router.route('/products')
     .get(getAvailableProducts)
     .post(createNewProduct)
     .delete(deleteAllProducts);
 
-router.route('/product/:id')
+router.route('/products/:id')
     .get(getAProductById)
     .delete(deleteAProductById)
     .put(updateAProductById);
 
-router.route('/product/search')
+router.route('/products/search')
     .get(searchProductsByName);
 
 router.route('/category')

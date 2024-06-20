@@ -12,9 +12,9 @@ const createNewProduct = async (req, res) => {
     try {
         const product = new Product({ name, description, price, quantity, category });
         await product.save();
-        return res.status(201).json(product);
+        return res.status(200).json(product);
     } catch (error) {
-        return res.status(500).json({ error: error.message });
+        return res.status(400).json({ error: error.message });
     }
 };
 
@@ -22,11 +22,11 @@ const getAvailableProducts = async (req, res) => {
     try {
         const products = await Product.find();
         if (products.length === 0) {
-            return res.status(404).json({ message: "No products found in the database." });
+            return res.status(204).json({ message: "No products found in the database." });
         }
         res.status(200).json(products);
     } catch (error) {
-        return res.status(500).json({ error: error.message });
+        return res.status(400).json({ error: error.message });
     }
 }
 
@@ -36,11 +36,11 @@ const getAProductById = async (req, res) => {
     try {
         const product = await Product.findById(id);
         if (!product) {
-            return res.status(404).json({ error: "No product found." });
+            return res.status(204).json({ error: "No product found." });
         }
         res.status(200).json(product);
     } catch (error) {
-        return res.status(500).json({ error: error.message });
+        return res.status(400).json({ error: error.message });
     }
 }
 
@@ -59,11 +59,11 @@ const updateAProductById = async (req, res) => {
             { new: true }
         );
         if (!product) {
-            return res.status(404).json({ error: "No product found!" });
+            return res.status(204).json({ error: "No product found!" });
         }
         res.status(200).json(product);
     } catch (error) {
-        return res.status(500).json({ error: error.message });
+        return res.status(400).json({ error: error.message });
     }
 }
 
@@ -73,11 +73,11 @@ const deleteAProductById = async (req, res) => {
     try {
         const product = await Product.findByIdAndDelete(id);
         if (!product) {
-            return res.status(404).json({ message: `The item ${id} is already deleted!` });
+            return res.status(204).json({ message: `The item ${id} is already deleted!` });
         }
         res.status(200).json(product);
     } catch (error) {
-        return res.status(500).json({ error: error.message });
+        return res.status(400).json({ error: error.message });
     }
 }
 
@@ -86,7 +86,7 @@ const deleteAllProducts = async (req, res) => {
         await Product.deleteMany();
         res.status(200).json({ message: "You've successfully deleted all the products." });
     } catch (error) {
-        return res.status(500).json({ error: error.message });
+        return res.status(400).json({ error: error.message });
     }
 }
 
@@ -95,11 +95,11 @@ const searchProductsByName = async (req, res) => {
     try {
         const products = await Product.find({ name: new RegExp(name, 'i') });
         if (products.length === 0) {
-            return res.status(404).json({ message: `No product matches the name ${capitalizeInitial(name)} in our database!` });
+            return res.status(204).json({ message: `No product matches the name ${capitalizeInitial(name)} in our database!` });
         }
         res.status(200).json(products);
     } catch (error) {
-        return res.status(500).json({ error: error.message });
+        return res.status(400).json({ error: error.message });
     }
 }
 

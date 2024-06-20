@@ -3,12 +3,12 @@ const PORT = process.env.PORT || 4000;
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://ayowolemieniomosule:Ayowolemi%4021@marketplace.iimdtae.mongodb.net/?retryWrites=true&w=majority&appName=marketplace'
 const mongoose = require('mongoose')
 const express = require('express');
-const routes = require('./routes/routes');
+const router = require('./routes/routes');
 
 const app = express()
 
 app.use(express.json());
-app.use('/api', routes)
+app.use('/api', router)
 
 mongoose.connect(MONGODB_URI)
     .then(() => {
